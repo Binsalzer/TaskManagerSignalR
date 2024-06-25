@@ -35,7 +35,7 @@ namespace TaskManagerWithSignalR.Data
             context.Database.ExecuteSqlInterpolated($"DELETE FROM Tasks WHERE Id = {id}");
         }
 
-        public void Select(int id, int userId)
+        public void SelectTask(int id, int userId)
         {
             using var context = new TaskManagerDataContext(_connection);
             var task = context.Tasks.FirstOrDefault(t => t.Id == id);
@@ -43,10 +43,10 @@ namespace TaskManagerWithSignalR.Data
             context.SaveChanges();
         }
 
-        public TaskItem GetTaskById(int id)
+        public TaskItem GetNewestTask()
         {
             using var context = new TaskManagerDataContext(_connection);
-            return context.Tasks.FirstOrDefault(t => t.Id == id);
+            return context.Tasks.OrderByDescending(t => t.Id).ToList()[0];
         }
     }
 }

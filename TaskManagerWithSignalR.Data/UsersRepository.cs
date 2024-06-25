@@ -40,5 +40,11 @@ namespace TaskManagerWithSignalR.Data
             using var context = new TaskManagerDataContext(_connection);
             return context.Users.FirstOrDefault(u => u.Email == email);
         }
+
+        public User GetUserForId(int id)
+        {
+            using var context = new TaskManagerDataContext(_connection);
+            return context.Users.FirstOrDefault(u => u.Id == id);
+        }
     }
 }

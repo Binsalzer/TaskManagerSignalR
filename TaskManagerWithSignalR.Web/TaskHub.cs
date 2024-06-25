@@ -16,7 +16,8 @@ namespace TaskManagerWithSignalR.Web
 
         public void AddTask(AddTaskVM vm)
         {
-            Clients.All.SendAsync("taskAdded", new TaskItem { UserId = null, Description = vm.Description });
+            var repo = new TaskManagerRepository(_connection);
+            Clients.All.SendAsync("taskAdded", repo.GetNewestTask());
         }
 
         public void Delete(int id)
@@ -26,8 +27,23 @@ namespace TaskManagerWithSignalR.Web
 
         public void Select()
         {
-            var repo=new TaskManagerRepository(_connection);
-            Clients.All.SendAsync("taskSelected", repo.GetAllTasks());
+            var repo = new TaskManagerRepository(_connection);
+            var usersRepo = new UsersRepository(_connection);
+            var tasks = repo.GetAllTasks();
+
+            foreach (var t in tasks)
+            {
+                if (t.UserId.HasValue)
+                {
+                    t.UserName = usersRepo.GetUserForId(t.UserId.Value).Name;
+                }
+            }
+
+            foreach (var t in tasks)
+            {
+                Console.WriteLine(t.UserName);
+            }
+            Clients.All.SendAsync("taskSelected", tasks);
         }
     }
 }

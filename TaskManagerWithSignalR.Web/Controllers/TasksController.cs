@@ -29,7 +29,16 @@ namespace TaskManagerWithSignalR.Web.Controllers
         public List<TaskItem> GetAllTasks()
         {
             var repo = new TaskManagerRepository(_connection);
-            return repo.GetAllTasks();
+            var usersRepo = new UsersRepository(_connection);
+            var tasks=repo.GetAllTasks();
+            foreach (TaskItem t in tasks)
+            {
+                if (t.UserId.HasValue)
+                {
+                    t.UserName = usersRepo.GetUserForId(t.UserId.Value).Name;
+                }
+            }
+            return tasks;
         }
 
         [HttpPost("delete")]
@@ -45,7 +54,8 @@ namespace TaskManagerWithSignalR.Web.Controllers
             var repo = new TaskManagerRepository(_connection);
             var userRepo = new UsersRepository(_connection);
 
-            repo.Select(vm.id, userRepo.GetByEmail(User.Identity.Name).Id);
+            repo.SelectTask(vm.id, userRepo.GetByEmail(User.Identity.Name).Id);
         }
+
     }
 }

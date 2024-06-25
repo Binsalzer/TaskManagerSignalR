@@ -30,9 +30,7 @@ const Home = () => {
                 setTasks(tasks => tasks.filter(t => t.id !== id))
             })
 
-            connection.on('taskSelected', taskItems => {
-                setTasks(tasks=> taskItems)
-            })
+            connection.on('taskSelected', tasks => setTasks(tasks))
         }
 
         connectToHub()
@@ -68,8 +66,12 @@ const Home = () => {
         } else if (t.userId === user.id) {
             return `i'm done!`
         } else {
-            return 'other'
+            return `${t.userName} is doing this!`
         }
+    }
+
+    const s = () => {
+        return 'button'
     }
 
     const getStatusColor = t => {
@@ -95,10 +97,12 @@ const Home = () => {
         connectionRef.current.invoke('delete', id)
     }
 
-    const onSelectClick = async(id) => {
+    const onSelectClick = async (id) => {
         await axios.post('/api/tasks/select', { id })
         connectionRef.current.invoke('select')
     }
+
+
 
     return (
         <div className="container" style={{ marginTop: '80px' }}>
@@ -122,7 +126,8 @@ const Home = () => {
                         {tasks.map(t => <tr key={t.id}>
                             <td>{t.description}</td>
                             <td>
-                                <button className={getStatusColor(t)} disabled={t.userId !== user.id && t.userId !== null} onClick={() => { onButtonClick(t) }}>{getStatusText(t)}</button>
+                                <button className={getStatusColor(t)} disabled={t.userId !== user.id && t.userId !== null}
+                                    onClick={() => { onButtonClick(t) }}>{getStatusText(t)}</button>
                             </td>
                         </tr>)}
                     </tbody>
