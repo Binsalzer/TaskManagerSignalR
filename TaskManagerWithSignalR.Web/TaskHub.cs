@@ -39,10 +39,6 @@ namespace TaskManagerWithSignalR.Web
                 }
             }
 
-            foreach (var t in tasks)
-            {
-                Console.WriteLine(t.UserName);
-            }
             Clients.All.SendAsync("taskSelected", tasks);
         }
     }
