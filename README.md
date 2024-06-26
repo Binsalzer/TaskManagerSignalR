@@ -9,4 +9,5 @@ The status of each task will be updated in real time for everyone without having
 Technologies used for this project:
 Backend done using C# with Entity Framework and Sql Server as the database.
 Frontend done using React.
+Bootstrap used for Html styling.
 SignalR used to update in real time.
